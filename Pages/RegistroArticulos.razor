@@ -36,7 +36,7 @@
         </div>
         <div class="form-group">
             <label for="ArticuloInventario">Inventario</label>
-            <InputNumber @bind-Value="articulo.Inventario" class="form-control" id="ArticuloInventario" readonly />
+            <InputNumber @bind-Value="inventario" class="form-control" id="ArticuloInventario" readonly />
 
            
         </div>
@@ -80,7 +80,7 @@
             else
                 toast.ShowError("No se encontro");
         }
-        
+
 
     }
     public void Eliminar()
@@ -99,7 +99,22 @@
     public void preCalcular()
     {
         if (articulo.ArticuloId == 0||articulo.ArticuloId==null)
-            articulo.Inventario = articulo.Cantidad * articulo.Costo;
+            inventario = articulo.Cantidad * articulo.Costo;
+        else
+        {
+
+
+            var lista = ArticulosBLL.GetList(p => true);
+            decimal valor = 0;
+            foreach (var item in lista)
+            {
+                valor += item.Cantidad * item.Costo;
+            }
+            inventario = valor;
+
+
+        }
+    }
     }
 
 }

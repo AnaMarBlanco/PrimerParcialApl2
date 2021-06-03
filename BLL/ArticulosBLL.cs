@@ -40,9 +40,9 @@ namespace PrimerParcialApl2.BLL
             try
             {
                 contexto.Articulos.Add(articulo);
-                Calcular();
+                
                 paso = contexto.SaveChanges()>0;
-                Calcular();
+                
             }
             catch (Exception)
             {
@@ -53,22 +53,7 @@ namespace PrimerParcialApl2.BLL
             return paso;
         }
 
-        public static void Calcular()
-        {
-            
-            var lista = GetList(p => true);
-            decimal valor = 0;
-            foreach (var item in lista)
-            {
-                valor += item.Cantidad * item.Costo;
-            }
-            foreach (var item in lista)
-            {
-                item.Inventario = valor;
-            }
-            
-            
-        }
+       
         public static bool Modificar(Articulos articulo)
         {
             Contexto contexto = new Contexto();
@@ -77,7 +62,7 @@ namespace PrimerParcialApl2.BLL
             try
             {
                 contexto.Entry(articulo).State = EntityState.Modified;
-                Calcular();
+               
                 paso = contexto.SaveChanges() > 0;
                 
             }
@@ -123,7 +108,7 @@ namespace PrimerParcialApl2.BLL
                articulo = contexto.Articulos.Find(id);
                contexto.Articulos.Remove(articulo);
                paso = contexto.SaveChanges()>0;
-                Calcular();
+               
 
             }
             catch (Exception)
