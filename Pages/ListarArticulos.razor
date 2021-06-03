@@ -1,0 +1,50 @@
+﻿@page "/lisararticulos"
+@using PrimerParcialApl2.BLL
+@using PrimerParcialApl2.Models
+
+<h3>ListarArticulos</h3>
+@if (Lista == null)
+{
+    <p> <em> Cargando ... </em> </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ArticuloId</th>
+                <th>Descripcion</th>
+                <th>Cantidad</th>
+                <th>Costo</th>
+                <th>Inventario</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var listar in Lista)
+            {
+                <tr>
+                    <td>@listar.ArticuloId</td>
+                    <td>@listar.Descripcion</td>
+                    <td>@listar.Cantidad</td>
+                    <td>@listar.Costo</td>
+                    <td>@listar.Inventario</td>
+
+                </tr>
+            }
+        </tbody>
+
+
+    </table>
+}
+
+
+
+@code {
+    List<Articulos> Lista = new List<Articulos>();
+
+    protected override void OnInitialized()
+    {
+        Lista = ArticulosBLL.GetList(p => true);
+    }
+}

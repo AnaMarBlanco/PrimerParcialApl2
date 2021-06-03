@@ -11,7 +11,7 @@ namespace PrimerParcialApl2.BLL
 {
     public class ArticulosBLL
     {
-        private static bool Guardar(Articulos articulo)
+        public static bool Guardar(Articulos articulo)
         {
             Contexto contexto = new Contexto();
 
@@ -19,9 +19,9 @@ namespace PrimerParcialApl2.BLL
             try
             {
                 if (articulo.ArticuloId != 0)
-                    paso = Insertar(articulo);
-                else
                     paso = Modificar(articulo);
+                else
+                    paso = Insertar(articulo);
             }
             catch (Exception)
             {
@@ -32,7 +32,7 @@ namespace PrimerParcialApl2.BLL
             return paso;
         }
 
-        private static bool Insertar(Articulos articulo)
+        public static bool Insertar(Articulos articulo)
         {
             Contexto contexto = new Contexto();
            
@@ -40,7 +40,9 @@ namespace PrimerParcialApl2.BLL
             try
             {
                 contexto.Articulos.Add(articulo);
+                Calcular();
                 paso = contexto.SaveChanges()>0;
+                Calcular();
             }
             catch (Exception)
             {
@@ -50,7 +52,24 @@ namespace PrimerParcialApl2.BLL
 
             return paso;
         }
-        private static bool Modificar(Articulos articulo)
+
+        public static void Calcular()
+        {
+            
+            var lista = GetList(p => true);
+            decimal valor = 0;
+            foreach (var item in lista)
+            {
+                valor += item.Cantidad * item.Costo;
+            }
+            foreach (var item in lista)
+            {
+                item.Inventario = valor;
+            }
+            
+            
+        }
+        public static bool Modificar(Articulos articulo)
         {
             Contexto contexto = new Contexto();
 
@@ -58,7 +77,9 @@ namespace PrimerParcialApl2.BLL
             try
             {
                 contexto.Entry(articulo).State = EntityState.Modified;
+                Calcular();
                 paso = contexto.SaveChanges() > 0;
+                
             }
             catch (Exception)
             {
@@ -69,7 +90,7 @@ namespace PrimerParcialApl2.BLL
             return paso;
         }
 
-        private static Articulos Buscar(int id)
+        public static Articulos Buscar(int id)
         {
             Contexto contexto = new Contexto();
             Articulos articulo = new Articulos();
@@ -91,7 +112,7 @@ namespace PrimerParcialApl2.BLL
             return articulo;
         }
 
-        private static bool Eliminar(int id)
+        public static bool Eliminar(int id)
         {
             bool paso = false;
             Contexto contexto = new Contexto();
@@ -102,6 +123,7 @@ namespace PrimerParcialApl2.BLL
                articulo = contexto.Articulos.Find(id);
                contexto.Articulos.Remove(articulo);
                paso = contexto.SaveChanges()>0;
+                Calcular();
 
             }
             catch (Exception)
@@ -113,13 +135,14 @@ namespace PrimerParcialApl2.BLL
             return paso;
         }
 
-        public static List<Articulos> GetList(Expression<Func<Articulos,bool>>expression)
+        public static List<Articulos> GetList(Expression<Func<Articulos, bool>> expression)
         {
             Contexto contexto = new Contexto();
             List<Articulos> list = new List<Articulos>();
             try
             {
-                list = contexto.Articulos.Where(expression => true).ToList();
+                list = contexto.Articulos.Where(expression).ToList();
+                //Calcular();
             }
             catch (Exception)
             {

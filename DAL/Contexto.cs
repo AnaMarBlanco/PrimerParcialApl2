@@ -12,7 +12,7 @@ namespace PrimerParcialApl2.DAL
         public DbSet<Articulos> Articulos { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source = /Data/Database.db");
+            optionsBuilder.UseSqlite("Data Source = Data/Database.db");
 
 
         }

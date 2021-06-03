@@ -1,0 +1,105 @@
+﻿@using PrimerParcialApl2.BLL
+@using PrimerParcialApl2.Models
+@inject IToastService toast
+@page "/registroarticulos"
+
+<h5>Registro de Articulos</h5>
+
+<EditForm Model="articulo" OnValidSubmit="Guardar">
+    <div class="container-fluid">
+        <div class="input-group">
+            <div class="form-group">
+                <label for="ArticuloIdNumber">Articulo Id</label>
+                <InputNumber id="ArticuloIdNumber" @bind-Value="articulo.ArticuloId" class="form-control" />
+            </div>
+            <button type="button" class="btn btn-primary" @onclick="Buscar">Buscar</button>
+        </div>
+
+
+        <div class="form-group">
+            <label for="ArticuloDescripcionText">Descripcion</label>
+            <InputText @bind-Value="articulo.Descripcion" class="form-control" id="ArticuloDescripcionText" />
+            <ValidationMessage For="@(() => articulo.Descripcion)" />
+        </div>
+
+        <div class="form-group">
+            <label for="ArticuloCantidad">Cantidad</label>
+            <InputNumber @bind-Value="articulo.Cantidad" class="form-control" id="ArticuloCantidad" @onchange="preCalcular" @onfocus="preCalcular" />
+
+            <ValidationMessage For="@(() => articulo.Cantidad)" />
+        </div>
+        <div class="form-group">
+            <label for="ArticuloCosto">Costo</label>
+            <InputNumber @bind-Value="articulo.Costo" class="form-control" id="ArticuloCosto" @onchange="preCalcular" @onfocus="preCalcular"/>
+
+            <ValidationMessage For="@(() => articulo.Costo)" />
+        </div>
+        <div class="form-group">
+            <label for="ArticuloInventario">Inventario</label>
+            <InputNumber @bind-Value="articulo.Inventario" class="form-control" id="ArticuloInventario" readonly />
+
+           
+        </div>
+
+        <div class="btn-group">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo</button>
+                <button type="submit" class="btn btn-lg btn-success">Guardar</button>
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+
+@code {
+    Articulos articulo = new Articulos();
+    public decimal inventario { get; set; } = 0;
+    public void Nuevo() {
+        articulo = new Articulos();
+    }
+    public void Guardar()
+    {
+        if(articulo != null)
+        {
+            if(ArticulosBLL.Guardar(articulo))
+                toast.ShowSuccess("Articulo guardado");
+            else
+                toast.ShowError("No se encontro");
+        }
+        Nuevo();
+    }
+    public void Buscar()
+    {
+        if (articulo.ArticuloId != 0)
+        {
+            articulo = ArticulosBLL.Buscar(articulo.ArticuloId);
+            if (articulo != null)
+                toast.ShowInfo("Articulo encontrado");
+            else
+                toast.ShowError("No se encontro");
+        }
+        
+
+    }
+    public void Eliminar()
+    {
+        if (articulo.ArticuloId != 0)
+        {
+
+            if(ArticulosBLL.Eliminar(articulo.ArticuloId))
+                toast.ShowInfo("Eliminado");
+            else
+                toast.ShowError("No se encontro");
+        }
+        Nuevo();
+    }
+
+    public void preCalcular()
+    {
+        if (articulo.ArticuloId == 0||articulo.ArticuloId==null)
+            articulo.Inventario = articulo.Cantidad * articulo.Costo;
+    }
+
+}
