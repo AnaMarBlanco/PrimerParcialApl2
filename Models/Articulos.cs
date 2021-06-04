@@ -11,12 +11,12 @@ namespace PrimerParcialApl2.Models
         [Key]
         public int ArticuloId { get; set; }
         [Required(ErrorMessage = "Este campo es obligatorio")]
+        [MinLength(3,ErrorMessage ="La Descripcion es muy corta")]
         public string Descripcion { get; set; }
         [Required(ErrorMessage = "Este campo es obligatorio")]
         public decimal Cantidad { get; set; }
         [Required(ErrorMessage = "Este campo es obligatorio")]
         public decimal Costo { get; set; }
-        [Required(ErrorMessage = "Este campo es obligatorio")]
         public decimal Inventario { get; set; }
     }
 }

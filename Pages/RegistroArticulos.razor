@@ -7,12 +7,16 @@
 
 <EditForm Model="articulo" OnValidSubmit="Guardar">
     <div class="container-fluid">
-        <div class="input-group">
-            <div class="form-group">
-                <label for="ArticuloIdNumber">Articulo Id</label>
+        <div class="form-group">
+            <label for="ArticuloIdNumber">Articulo Id</label>
+            <div class="input-group">
+               
                 <InputNumber id="ArticuloIdNumber" @bind-Value="articulo.ArticuloId" class="form-control" />
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-primary" @onclick="Buscar">Buscar</button>
+                </div>
             </div>
-            <button type="button" class="btn btn-primary" @onclick="Buscar">Buscar</button>
+            
         </div>
 
 
@@ -56,18 +60,24 @@
 @code {
     Articulos articulo = new Articulos();
     public decimal inventario { get; set; } = 0;
-    public void Nuevo() {
+    public void Nuevo()
+    {
         articulo = new Articulos();
     }
     public void Guardar()
     {
         if(articulo != null)
         {
-            if(ArticulosBLL.Guardar(articulo))
-                toast.ShowSuccess("Articulo guardado");
-            else
-                toast.ShowError("No se encontro");
+            if(validar())
+            {
+                if (ArticulosBLL.Guardar(articulo))
+                    toast.ShowSuccess("Articulo guardado");
+                else
+                    toast.ShowError("No se encontro");
+            }
+
         }
+        preCalcular();
         Nuevo();
     }
     public void Buscar()
@@ -80,6 +90,7 @@
             else
                 toast.ShowError("No se encontro");
         }
+
 
 
     }
@@ -114,7 +125,19 @@
 
 
         }
+
     }
+
+    public bool validar()
+    {
+        bool paso = true;
+        if (articulo.Cantidad <= 0)
+            paso = false;
+        if (articulo.Costo <= 0)
+            paso = false;
+
+        return paso;
     }
+
 
 }
